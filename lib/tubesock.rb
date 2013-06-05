@@ -41,7 +41,7 @@ class Tubesock
     )
     @socket.write frame.to_s
   rescue IOError
-    close
+    @socket.close unless @socket.closed?
   end
 
   def onopen(&block)
