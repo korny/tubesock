@@ -8,6 +8,9 @@ class Tubesock
   class HijackNotAvailable < RuntimeError
   end
 
+  class UnexpectedProtocol < RuntimeError
+  end
+
   def initialize(socket, version)
     @socket     = socket
     @version    = version
@@ -19,6 +22,10 @@ class Tubesock
 
   def self.hijack(env)
     if env['rack.hijack']
+      if env['HTTP_UPGRADE'] != 'websocket'
+        raise Tubesock::UnexpectedProtocol, "expected WebSocket connection, got #{env['HTTP_UPGRADE'] || 'normal HTTP request'}"
+      end
+
       env['rack.hijack'].call
       socket = env['rack.hijack_io']
 
