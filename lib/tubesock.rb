@@ -22,7 +22,7 @@ class Tubesock
 
   def self.hijack(env)
     if env['rack.hijack']
-      if env['HTTP_UPGRADE'] != 'websocket'
+      if env['HTTP_UPGRADE'].downcase != 'websocket'
         raise Tubesock::UnexpectedProtocol, "expected WebSocket connection, got #{env['HTTP_UPGRADE'] || 'normal HTTP request'}"
       end
 
